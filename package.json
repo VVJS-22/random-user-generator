@@ -2,8 +2,10 @@
   "name": "random-generator",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://vvjs-22.github.io/random-user-generator",
   "dependencies": {
     "@craco/craco": "^6.4.0",
+    "gh-pages": "^3.2.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -11,6 +13,8 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
