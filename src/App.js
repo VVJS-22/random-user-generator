@@ -1,6 +1,6 @@
 import tw from "tailwind-styled-components";
 import { useEffect, useState } from "react";
-import { Deck, Card, Details } from './components'
+import { Deck, Card, Details, Span, Data } from './components'
 
 
 const colors = [
@@ -42,6 +42,25 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [color, setColor] = useState("blue");
   const [alert, setAlert] = useState(false)
+
+  const dateFormater = (entry) => {
+    return entry
+            .slice(0, 10)
+            .split("-")
+            .reverse()
+            .join("-")
+  }
+
+  const capitalize = (entry) => {
+    return entry
+              .slice(0, 1)
+              .toUpperCase() 
+              + entry.slice(1)
+  }
+
+  const copy = (text) => {
+    return navigator.clipboard.writeText(text)
+  }
 
   const usefetch = async () => {
     const response = await fetch(URL);
@@ -86,9 +105,33 @@ const App = () => {
       {alert && <Alert>Copied to clipboard</Alert>}
       <Deck>
         <Card className={`bg-${color}-600`} user={user}>
-          
-          <Details user={user} func={setAlert}> 
-            
+          <Details> 
+            {user &&
+              Object.entries(user).map((entry, index) => {
+                if (index !== 0) {
+                  return (
+                    <Data
+                      key={index}
+                      title="Click to copy"
+                      onClick={() => {
+                        setAlert(true);
+                        copy(entry[1])
+                      }}
+                    >
+                      <Span index={index} entry={entry} />
+                      :{" "}
+                      {
+                        index === 2
+                          ? dateFormater(entry[1])
+                        : index === 7
+                          ? entry[1]
+                          : capitalize(entry[1])
+                      }
+                    </Data>
+                  );
+                }
+                return null;
+              })}
           </Details>
         </Card>
         <Button

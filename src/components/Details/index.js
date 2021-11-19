@@ -1,10 +1,11 @@
 import { Wrapper } from './style/Details'
-import Data from './Data'
 
-const Details = ({user, func, children}) => {
+
+
+
+const Details = ({children}) => {
     return (
         <Wrapper>
-            <Data user={user} func={func}/>
             {children}
         </Wrapper>
     )
