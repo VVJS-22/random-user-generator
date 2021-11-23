@@ -6,6 +6,10 @@
   .min-h-60 {
     min-height: 60%;
   }
+
+  .loader-top-border {
+    border-top: 0.5rem solid #ff0647
+  }
 }
 
 *, *:after, *:before {
@@ -37,3 +41,5 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
