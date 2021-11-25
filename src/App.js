@@ -1,5 +1,6 @@
 import tw from "tailwind-styled-components";
 import { useEffect, useState } from "react";
+import { useFetch } from './hooks/useFetch'
 import { Deck, Card, Details, Span, Data } from './components'
 import Loader from "./components/Loader";
 
@@ -55,7 +56,45 @@ const App = () => {
   const [bgColor, setBgColor] = useState("blue");
   const [bglColor, setBglColor] = useState("blue");
   const [alert, setAlert] = useState(false)
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
+
+  const { response, error, loading, fetchData} = useFetch(URL, {})
+
+  console.log(response)
+  console.log(error)
+
+  
+
+  useEffect(() => {
+    if (response) {
+      const person = response.results[0]
+  
+      const { cell, email, gender } = person;
+          const { large: image } = person.picture;
+          const { first, last } = person.name;
+          const { date: dob } = person.dob;
+          const {
+            location: { city, state },
+          } = person;
+  
+          const newUser = {
+            image,
+            name: `${first} ${last}`,
+            dob,
+            gender,
+            city,
+            state,
+            cell,
+            email,
+          };
+  
+          setUser(newUser)
+          const randomColor = Math.floor(Math.random() * 8)
+          setBgColor(bgColors[randomColor]);
+          setBglColor(bglColors[randomColor]);
+    }
+  }, [response])
+  
 
   const dateFormater = (entry) => {
     return entry
@@ -79,47 +118,47 @@ const App = () => {
     return navigator.clipboard.writeText(text)
   }
 
-  const usefetch = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch(URL);
-      const data = await response.json();
-      setLoading(false)
-      console.log(data)
-      const user = data.results[0];
-      const { cell, email, gender } = user;
-      const { large: image } = user.picture;
-      const { first, last } = user.name;
-      const { date: dob } = user.dob;
-      const {
-        location: { city, state },
-      } = user;
+  // const usefetch = async () => {
+  //   try {
+  //     setLoading(true)
+  //     const response = await fetch(URL);
+  //     const data = await response.json();
+  //     setLoading(false)
+  //     console.log(data)
+  //     const user = data.results[0];
+  //     const { cell, email, gender } = user;
+  //     const { large: image } = user.picture;
+  //     const { first, last } = user.name;
+  //     const { date: dob } = user.dob;
+  //     const {
+  //       location: { city, state },
+  //     } = user;
 
-      const newUser = {
-        image,
-        name: `${first} ${last}`,
-        dob,
-        gender,
-        city,
-        state,
-        cell,
-        email,
-      };
-      setUser(newUser);
-      const randomColor = Math.floor(Math.random() * 8)
-      setBgColor(bgColors[randomColor]);
-      setBglColor(bglColors[randomColor]);
-    } catch (error) {
-      console.log(error)
-      setLoading(false)
-    }
+  //     const newUser = {
+  //       image,
+  //       name: `${first} ${last}`,
+  //       dob,
+  //       gender,
+  //       city,
+  //       state,
+  //       cell,
+  //       email,
+  //     };
+  //     setUser(newUser);
+  //     const randomColor = Math.floor(Math.random() * 8)
+  //     setBgColor(bgColors[randomColor]);
+  //     setBglColor(bglColors[randomColor]);
+  //   } catch (error) {
+  //     console.log(error)
+  //     setLoading(false)
+  //   }
     
     
-  };
+  // };
 
-  useEffect(() => {
-    usefetch();
-  }, []);
+  // useEffect(() => {
+  //   usefetch();
+  // }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -128,6 +167,13 @@ const App = () => {
 
     return () => clearTimeout(timeout)
   },[alert])
+
+  if (error) {
+    return (
+      <h1>{error.message}</h1>
+    )
+  }
+  
 
   return (
     <>
@@ -176,9 +222,7 @@ const App = () => {
         </Card>
         <Button
           className={`${bglColor}`}
-          onClick={() => {
-            usefetch();
-          }}
+          onClick={fetchData}
         >
           Next
         </Button>
